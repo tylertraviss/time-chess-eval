@@ -2,14 +2,11 @@ import chess
 from time_chess_eval import TimeConsideringEvaluator
 
 def main():
-    # Create a chess board
-    board = chess.Board()
     
-    # Initialize the evaluator with Stockfish
-    # Note: You need to have Stockfish installed on your system
-    # On macOS, you can install it with: brew install stockfish
+    board = chess.Board()    
+    
     evaluator = TimeConsideringEvaluator(
-        stockfish_path="/usr/local/bin/stockfish",  # Adjust this path to your Stockfish installation
+        stockfish_path="/opt/homebrew/bin/stockfish",
         position_weight=0.7,
         time_weight=0.3
     )
