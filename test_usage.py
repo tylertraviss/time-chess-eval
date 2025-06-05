@@ -9,7 +9,7 @@ def main():
     # Note: You need to have Stockfish installed on your system
     # On macOS, you can install it with: brew install stockfish
     evaluator = TimeConsideringEvaluator(
-        stockfish_path="/usr/local/bin/stockfish",  # Adjust this path to your Stockfish installation
+        stockfish_path="/opt/homebrew/bin/stockfish",  # Adjust this path to your Stockfish installation
         position_weight=0.7,
         time_weight=0.3
     )
