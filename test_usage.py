@@ -1,52 +1,40 @@
 import chess
 from time_chess_eval import TimeConsideringEvaluator
 
-def main():
-    # Create a chess board
-    board = chess.Board()
-    
-    # Initialize the evaluator with Stockfish
-    # Note: You need to have Stockfish installed on your system
-    # On macOS, you can install it with: brew install stockfish
-    evaluator = TimeConsideringEvaluator(
-        stockfish_path="/opt/homebrew/bin/stockfish",  # Adjust this path to your Stockfish installation
-        position_weight=0.7,
-        time_weight=0.3
-    )
-    
-    # Test initial position
-    print("\nTesting initial position:")
-    eval_score, details = evaluator.evaluate(
-        board=board,
-        white_time=300,  # 5 minutes
-        black_time=300   # 5 minutes
-    )
-    print(f"Combined evaluation: {eval_score:.3f}")
-    print(f"Position evaluation: {details['position_evaluation']:.3f}")
-    print(f"Time advantage: {details['time_advantage']:.3f}")
-    
-    # Test a position with white advantage
-    print("\nTesting position with white advantage:")
-    board.set_fen("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1")
-    eval_score, details = evaluator.evaluate(
-        board=board,
-        white_time=300,
-        black_time=300
-    )
-    print(f"Combined evaluation: {eval_score:.3f}")
-    print(f"Position evaluation: {details['position_evaluation']:.3f}")
-    print(f"Time advantage: {details['time_advantage']:.3f}")
-    
-    # Test time pressure
-    print("\nTesting time pressure:")
-    eval_score, details = evaluator.evaluate(
-        board=board,
-        white_time=300,  # 5 minutes
-        black_time=60    # 1 minute
-    )
-    print(f"Combined evaluation: {eval_score:.3f}")
-    print(f"Position evaluation: {details['position_evaluation']:.3f}")
-    print(f"Time advantage: {details['time_advantage']:.3f}")
 
-if __name__ == "__main__":
-    main() 
+# Path to the Stockfish engine binary
+STOCKFISH_PATH = "/opt/homebrew/bin/stockfish"
+
+# Create a sample chess position (starting position)
+board = chess.Board()
+
+# Example time values in seconds
+white_time = 50.0   # White's remaining time
+black_time = 50.0  # Black's remaining time
+
+# Initialize the evaluator
+evaluator = TimeConsideringEvaluator(
+    stockfish_path=STOCKFISH_PATH,
+    position_weight=0.7,
+    time_weight=0.3,
+    time_threshold=60.0,
+    engine_depth=15
+)
+
+# Compute evaluation score and breakdown
+combined_eval, details = evaluator.evaluate(board, white_time, black_time)
+
+# Compute estimated win probability for White
+win_prob = evaluator.calculate_win_probability(board, white_time, black_time)
+
+# Display results
+print("=== Evaluation Summary ===")
+print(f"Combined Evaluation Score: {combined_eval:.3f}")
+for key, value in details.items():
+    if isinstance(value, float):
+        print(f"{key}: {value:.3f}")
+    else:
+        print(f"{key}: {value}")
+
+print("\n=== Win Probability ===")
+print(f"Estimated Win Probability for White: {win_prob:.2%}")
